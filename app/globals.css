@@ -1,0 +1,154 @@
+@import 'tailwindcss';
+
+/*
+  EnrichMINT tokens. Mint is the brand; ink and paper are warm neutrals.
+  Zest and lilac are accent fills for hero tiles and highlights, never for body text.
+  Add tokens here; never hard-code hex values in components.
+*/
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-inter), ui-sans-serif,
+    system-ui, sans-serif;
+
+  --color-mint-50: #effbf6;
+  --color-mint-100: #d6f5e7;
+  --color-mint-200: #ade9d0;
+  --color-mint-300: #78d6b3;
+  --color-mint-400: #43bd93;
+  --color-mint-500: #22a27a;
+  --color-mint-600: #168263; /* fills with white text */
+  --color-mint-700: #136852; /* links, mint text on paper */
+  --color-mint-800: #125342;
+  --color-mint-900: #0f4437;
+
+  --color-ink-950: #0d1512; /* dark hero and footer surfaces */
+  --color-ink-900: #16201c;
+  --color-ink-800: #222e29;
+  --color-ink-700: #33413b;
+  --color-ink-500: #5d6b65;
+  --color-ink-400: #7d8a84;
+  --color-ink-300: #a9b3ae;
+  --color-ink-200: #d6dcd9;
+  --color-ink-100: #e9edeb;
+  --color-ink-50: #f2f4f3;
+
+  --color-paper: #f6f5f0;
+  --color-card: #ffffff;
+
+  /* Accent fills: always pair with ink-900 text. */
+  --color-zest-100: #f3fcd6;
+  --color-zest-200: #e7f9a8;
+  --color-zest-300: #d6f36f;
+  --color-zest-400: #c2e348;
+  --color-lilac-100: #efeaff;
+  --color-lilac-200: #ddd2ff;
+  --color-lilac-300: #c3b2fb;
+  --color-lilac-500: #9a7ff0;
+
+  /* Attribution colours: what the contributor said, what AI suggests, what is unknown. */
+  --color-human-50: #eef6ff;
+  --color-human-600: #2459b8;
+  --color-ai-50: #f6f2ff;
+  --color-ai-600: #6a46c9;
+  --color-unknown-50: #f5f5f4;
+  --color-unknown-600: #57534e;
+
+  --color-warn-50: #fff8eb;
+  --color-warn-600: #b45309;
+  --color-danger-50: #fef2f2;
+  --color-danger-600: #c2410c;
+  --color-danger-700: #b91c1c;
+  --color-sandbox-50: #fff7ed;
+  --color-sandbox-600: #c2410c;
+
+  /* Shared page width so header, content and footer line up. */
+  --container-page: 88rem;
+
+  --shadow-card: 0 1px 2px rgb(22 32 28 / 0.04), 0 4px 16px rgb(22 32 28 / 0.04);
+  --shadow-lift: 0 2px 4px rgb(22 32 28 / 0.04), 0 16px 40px rgb(22 32 28 / 0.1);
+}
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink-900);
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-mint-500);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-zest-300);
+  color: var(--color-ink-900);
+}
+
+/* Faint dot grid behind dark hero bands. */
+.bg-dots {
+  background-image: radial-gradient(
+    rgb(255 255 255 / 0.07) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/*
+  Coin loader: 8 frames side by side in /brand/coin-spin.webp, stepped one
+  frame at a time. Size comes from --coin-size, set by the CoinLoader component.
+*/
+.coin-loader {
+  display: inline-block;
+  flex-shrink: 0;
+  width: var(--coin-size);
+  height: var(--coin-size);
+  background-image: url('/brand/coin-spin.webp');
+  background-repeat: no-repeat;
+  background-size: calc(var(--coin-size) * 8) var(--coin-size);
+  animation: coin-spin 0.9s steps(8) infinite;
+}
+
+@keyframes coin-spin {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: calc(var(--coin-size) * -8) 0;
+  }
+}
+
+/* Reduced motion: a still coin with a gentle fade, never a fast flicker. */
+@media (prefers-reduced-motion: reduce) {
+  .coin-loader {
+    animation: coin-breathe 1.6s ease-in-out infinite !important;
+    animation-duration: 1.6s !important;
+  }
+}
+
+@keyframes coin-breathe {
+  50% {
+    opacity: 0.55;
+  }
+}
