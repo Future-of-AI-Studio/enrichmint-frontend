@@ -270,6 +270,89 @@ export function StewardCardView({
       )
     }
 
+    case 'agent_exchange': {
+      const { data } = card
+      const fit = {
+        FITS: ['Fits what they take on', 'mint'],
+        UNSURE: ['Not sure it fits', 'warn'],
+        OUTSIDE: ['Outside what they take on', 'danger']
+      } as const
+      const [fitLabel, fitTone] = fit[data.fit]
+      return (
+        <Card className='space-y-4'>
+          <div className='flex flex-wrap items-start justify-between gap-3'>
+            <div>
+              <p className='text-sm font-semibold text-ink-900'>
+                Your steward asked {data.contributorName}’s agent
+              </p>
+              <p className='text-xs text-ink-500'>
+                Two AI agents checked the fit before anyone’s time or money is
+                spent. Nothing was sent, accepted or paid.
+              </p>
+            </div>
+            <Badge tone={fitTone}>{fitLabel}</Badge>
+          </div>
+          <div className='space-y-3'>
+            <div className='mr-8 rounded-2xl bg-ink-50 p-3'>
+              <p className='text-xs font-semibold text-ink-500'>Your steward</p>
+              <p className='mt-1 text-sm text-ink-800'>{data.stewardMessage}</p>
+            </div>
+            <div className='ml-8 rounded-2xl bg-mint-50 p-3 ring-1 ring-mint-200'>
+              <p className='flex items-center gap-2 text-xs font-semibold text-mint-800'>
+                <Avatar name={data.contributorName} size='sm' />
+                {data.contributorName}’s agent
+              </p>
+              <p className='mt-2 text-sm text-ink-800'>{data.reply}</p>
+              {data.suggestedFocus && (
+                <p className='mt-2 text-sm text-ink-700'>
+                  <span className='font-semibold'>
+                    To get a better answer:{' '}
+                  </span>
+                  {data.suggestedFocus}
+                </p>
+              )}
+            </div>
+          </div>
+          {data.priceCents !== null && (
+            <dl className='grid gap-2 rounded-2xl bg-ink-50 p-3 text-sm sm:grid-cols-3'>
+              <div>
+                <dt className='text-xs text-ink-500'>Their price</dt>
+                <dd className='font-semibold'>
+                  {formatUsd(data.priceCents)}
+                  {data.withinBudget === false && (
+                    <span className='font-normal text-danger-600'>
+                      {' '}
+                      over budget
+                    </span>
+                  )}
+                </dd>
+              </div>
+              {data.acceptanceH !== null && (
+                <div>
+                  <dt className='text-xs text-ink-500'>They reply within</dt>
+                  <dd className='font-semibold'>{hours(data.acceptanceH)}</dd>
+                </div>
+              )}
+              {data.deliveryH !== null && (
+                <div>
+                  <dt className='text-xs text-ink-500'>Answer after payment</dt>
+                  <dd className='font-semibold'>{hours(data.deliveryH)}</dd>
+                </div>
+              )}
+            </dl>
+          )}
+          <p className='text-xs text-ink-400'>
+            {data.aiUsed
+              ? `The agent is AI reading ${data.contributorName}’s published profile and boundaries.`
+              : 'The agent could not run, so this shows their published terms only.'}{' '}
+            Price and deadlines are {data.contributorName}’s own settings.{' '}
+            {data.contributorName} decides whether to accept, and you pay only
+            after that.
+          </p>
+        </Card>
+      )
+    }
+
     case 'request_draft': {
       const { data } = card
       const state =

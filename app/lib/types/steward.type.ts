@@ -127,6 +127,24 @@ export type StewardCard =
       }
     }
   | {
+      type: 'agent_exchange'
+      data: {
+        available: boolean
+        contributorId: string
+        contributorName: string
+        stewardMessage: string
+        fit: 'FITS' | 'UNSURE' | 'OUTSIDE'
+        reply: string
+        suggestedFocus: string | null
+        aiUsed: boolean
+        priceCents: number | null
+        deliveryH: number | null
+        acceptanceH: number | null
+        withinBudget: boolean | null
+        remainingBudgetCents: number | null
+      }
+    }
+  | {
       type: 'request_draft'
       data: {
         requestId: string

@@ -30,7 +30,8 @@ function buildCsp(nonce: string, isDev: boolean): string {
     "frame-ancestors 'none'",
     `form-action 'self' ${paypal}`,
     `img-src 'self' data: blob: ${paypal}`,
-    "font-src 'self'",
+    // data: covers the icon font AG Studio embeds for the admin dashboard.
+    "font-src 'self' data:",
     `style-src 'self' 'unsafe-inline' ${paypal}`,
     // strict-dynamic lets the nonced bundle load the PayPal SDK script.
     isDev

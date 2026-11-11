@@ -4,6 +4,7 @@ import { getSession } from '@/app/lib/services/auth.service'
 
 const TABS: Array<readonly [string, string]> = [
   ['/admin', 'Overview'],
+  ['/admin/dashboard', 'Dashboard'],
   ['/admin/reviews', 'Reviews'],
   ['/admin/cases', 'Refunds, reports and late requests'],
   ['/admin/payments', 'Payments']
