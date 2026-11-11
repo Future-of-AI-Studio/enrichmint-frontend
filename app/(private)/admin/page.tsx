@@ -62,9 +62,17 @@ export default async function AdminPage(): Promise<React.JSX.Element> {
       </Card>
       <Card className='space-y-2'>
         <h2 className='font-semibold'>AI cost</h2>
+        <p className='text-sm text-ink-500'>
+          Team spend monitor: the total AI cost across all users. At the daily
+          cap, AI features pause until the next day (UTC). Guides, requests and
+          payments keep working.
+        </p>
         <p className='text-sm'>
           Today ${ai.spentTodayUsd.toFixed(4)} of ${ai.dailyBudgetUsd} daily
           cap.
+        </p>
+        <p className='pt-1 text-xs font-semibold tracking-wide text-ink-500 uppercase'>
+          All time, by AI function
         </p>
         <ul className='text-sm text-ink-500'>
           {ai.byPurpose.map((row) => (

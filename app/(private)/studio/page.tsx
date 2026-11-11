@@ -12,6 +12,7 @@ import {
 import { getSession } from '@/app/lib/services/auth.service'
 import {
   getEarnings,
+  getMyProfile,
   listInterviews,
   myGuides
 } from '@/app/lib/services/studio.service'
@@ -57,11 +58,12 @@ export default async function StudioPage(): Promise<React.JSX.Element> {
     )
   }
 
-  const [guides, interviews, requests, earnings] = await Promise.all([
+  const [guides, interviews, requests, earnings, settings] = await Promise.all([
     myGuides(),
     listInterviews(),
     inbox(),
-    profile.status === 'APPROVED' ? getEarnings() : null
+    profile.status === 'APPROVED' ? getEarnings() : null,
+    getMyProfile()
   ])
   const waiting =
     requests.data?.filter((request) =>
@@ -93,6 +95,30 @@ export default async function StudioPage(): Promise<React.JSX.Element> {
           need to wait to start writing.
         </Notice>
       )}
+      {profile.status !== 'SUSPENDED' &&
+        settings.data &&
+        !settings.data.payoutEmail && (
+          <Notice tone='warn' title='Add your PayPal email to get paid'>
+            Your earnings are recorded, but you cannot withdraw them until you
+            add a PayPal payout email in{' '}
+            <Link href='/studio/settings' className='font-medium underline'>
+              Settings
+            </Link>
+            .
+          </Notice>
+        )}
+      {profile.status !== 'SUSPENDED' &&
+        settings.data &&
+        !settings.data.acceptingRequests && (
+          <Notice title='Turn on personal requests to earn from questions'>
+            Learners can pay you for a personal answer when a guide runs out.
+            Set your price and switch requests on in{' '}
+            <Link href='/studio/settings' className='font-medium underline'>
+              Settings
+            </Link>
+            .
+          </Notice>
+        )}
       {profile.status !== 'SUSPENDED' && !guides.data?.length && (
         <div className='rounded-3xl bg-mint-50 p-6 ring-1 ring-mint-200'>
           <p className='text-xs font-semibold tracking-wide text-mint-700 uppercase'>

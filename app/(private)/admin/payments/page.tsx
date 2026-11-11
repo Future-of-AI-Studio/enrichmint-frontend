@@ -1,4 +1,4 @@
-import { Badge, ErrorNote, PageHeader } from '@/app/components/ui'
+import { Badge, ErrorNote, Notice, PageHeader } from '@/app/components/ui'
 import { adminPayments } from '@/app/lib/services/admin.service'
 import { formatUsd, relative } from '@/app/lib/utils/format'
 
@@ -63,7 +63,7 @@ export default async function PaymentsPage(): Promise<React.JSX.Element> {
           <Badge key='v' tone={event.verified ? 'mint' : 'danger'}>
             {event.verified ? 'verified' : 'not verified, ignored'}
           </Badge>,
-          event.outcome ?? 'not processed yet',
+          <WebhookOutcome key='o' outcome={event.outcome} />,
           <span key='i' className='font-mono text-xs'>
             {[event.paypalEventId, event.resourceId]
               .filter(Boolean)
@@ -71,6 +71,12 @@ export default async function PaymentsPage(): Promise<React.JSX.Element> {
           </span>
         ])}
       />
+      <Notice title='How payouts happen'>
+        Contributors start their own payouts from Share, then Earnings, once
+        they have a balance and a PayPal payout email. Admins do not send
+        payouts. A payout counts as transferred only after PayPal reports it as
+        SUCCESS.
+      </Notice>
       <Table
         title='Payouts'
         head={['When', 'Contributor', 'Amount', 'Status', 'PayPal ids']}
@@ -87,6 +93,25 @@ export default async function PaymentsPage(): Promise<React.JSX.Element> {
         ])}
       />
     </div>
+  )
+}
+
+/** Explains events for records this server never created, so they do not read as lost money. */
+function WebhookOutcome({
+  outcome
+}: {
+  outcome: string | null
+}): React.JSX.Element {
+  if (!outcome) return <>not processed yet</>
+  if (!outcome.includes('unknown')) return <>{outcome}</>
+  return (
+    <span>
+      {outcome}
+      <span className='block text-xs text-ink-400'>
+        From another environment that shares this PayPal sandbox app. No record
+        here changed.
+      </span>
+    </span>
   )
 }
 
