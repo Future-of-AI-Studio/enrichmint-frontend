@@ -46,6 +46,8 @@ declare global {
     }
   }
 }
+// PayPal's elements are inline at a fixed 225px unless told to fill their column.
+const SDK_FILL = 'block w-full'
 type SdkElement = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLElement>,
   HTMLElement
@@ -345,21 +347,25 @@ export function PayPalCheckout({
         <Notice tone='mint'>Payment confirmed. Opening…</Notice>
       )}
       <div
-        className={phase.name === 'ready' ? 'grid gap-2' : 'hidden'}
+        className={
+          phase.name === 'ready'
+            ? 'mx-auto grid w-full max-w-md gap-2'
+            : 'hidden'
+        }
         aria-label='Payment options'
       >
         <div className={show('paypal')}>
-          <paypal-button ref={paypalRef} type='pay' />
+          <paypal-button ref={paypalRef} type='pay' className={SDK_FILL} />
         </div>
         <div className={show('venmo')}>
-          <venmo-button ref={venmoRef} type='pay' />
+          <venmo-button ref={venmoRef} type='pay' className={SDK_FILL} />
         </div>
         <div className={show('paylater')}>
-          <paypal-pay-later-button ref={paylaterRef} />
+          <paypal-pay-later-button ref={paylaterRef} className={SDK_FILL} />
         </div>
         <div className={show('card')}>
-          <paypal-basic-card-container>
-            <paypal-basic-card-button ref={cardRef} />
+          <paypal-basic-card-container className={SDK_FILL}>
+            <paypal-basic-card-button ref={cardRef} className={SDK_FILL} />
           </paypal-basic-card-container>
         </div>
         <p className='text-xs text-ink-400'>
