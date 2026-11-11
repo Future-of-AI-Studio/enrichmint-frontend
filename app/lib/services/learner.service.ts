@@ -4,9 +4,12 @@ import type {
   AskResult,
   AssistantMessage,
   CheckoutStart,
+  FieldNote,
+  FieldNoteSource,
   Goal,
   GoalRow,
   OrderSummary,
+  PublicFieldNote,
   Recommendations
 } from '../types/learner.type'
 import type { StewardshipEntry } from '../types/user.type'
@@ -165,3 +168,44 @@ export const report = async (
     method: 'POST',
     body: { targetType, targetId, reason }
   })
+
+export const myFieldNote = async (source: FieldNoteSource, sourceId: string) =>
+  apiCall<{ note: FieldNote | null }>(
+    `/field-notes/mine?source=${source}&sourceId=${sourceId}`,
+    'Loading your field note'
+  )
+
+export const draftFieldNote = async (
+  source: FieldNoteSource,
+  sourceId: string
+) =>
+  apiCall<FieldNote, { source: FieldNoteSource; sourceId: string }>(
+    '/field-notes/draft',
+    'Drafting your field note',
+    { method: 'POST', body: { source, sourceId } }
+  )
+
+export const updateFieldNote = async (noteId: string, body: string) =>
+  apiCall<FieldNote, { body: string }>(
+    `/field-notes/${noteId}`,
+    'Saving your field note',
+    { method: 'PATCH', body: { body } }
+  )
+
+/** Publishing needs approved: true; the API also makes the author a payee for note shares. */
+export const publishFieldNote = async (noteId: string, payoutEmail?: string) =>
+  apiCall<FieldNote, { approved: true; payoutEmail?: string }>(
+    `/field-notes/${noteId}/publish`,
+    'Publishing your field note',
+    {
+      method: 'POST',
+      body: { approved: true, ...(payoutEmail ? { payoutEmail } : {}) }
+    }
+  )
+
+export const guideFieldNotes = async (guideId: string) =>
+  apiCall<PublicFieldNote[]>(
+    `/guides/${guideId}/field-notes`,
+    'Loading field notes',
+    { auth: false }
+  )

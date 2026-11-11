@@ -68,6 +68,8 @@ export type OrderSummary = {
   failureReason: string | null
   completedAt: string | null
   createdAt: string
+  paypalOrderId: string | null
+  paypalCaptureId: string | null
   guide: { id: string; title: string; slug: string } | null
 }
 
@@ -123,3 +125,28 @@ export type ApplyResult = {
 }
 
 export type { PublicGuide }
+
+export type FieldNoteSource = 'GUIDE' | 'RESPONSE'
+
+/** Mirrors enrichmint-api `NOTE_SELECT` in field-notes.service.ts. */
+export type FieldNote = {
+  id: string
+  guideId: string
+  source: FieldNoteSource
+  sourceId: string
+  body: string
+  status: 'DRAFT' | 'PUBLISHED' | 'HIDDEN'
+  publishedAt: string | null
+  createdAt: string
+  guide: { title: string; slug: string }
+  warnings?: string[]
+}
+
+export type PublicFieldNote = {
+  id: string
+  body: string
+  source: FieldNoteSource
+  publishedAt: string | null
+  authorFirstName: string
+  isDemo: boolean
+}

@@ -54,7 +54,7 @@ export default async function PaymentsPage(): Promise<React.JSX.Element> {
       />
       <Table
         title='Webhook events'
-        head={['When', 'Type', 'Verified', 'Outcome']}
+        head={['When', 'Type', 'Verified', 'Outcome', 'PayPal ids']}
         rows={webhookEvents.map((event) => [
           relative(event.createdAt),
           <span key='t' className='font-mono text-xs'>
@@ -63,17 +63,27 @@ export default async function PaymentsPage(): Promise<React.JSX.Element> {
           <Badge key='v' tone={event.verified ? 'mint' : 'danger'}>
             {event.verified ? 'verified' : 'not verified, ignored'}
           </Badge>,
-          event.outcome ?? 'not processed yet'
+          event.outcome ?? 'not processed yet',
+          <span key='i' className='font-mono text-xs'>
+            {[event.paypalEventId, event.resourceId]
+              .filter(Boolean)
+              .join(' / ')}
+          </span>
         ])}
       />
       <Table
         title='Payouts'
-        head={['When', 'Contributor', 'Amount', 'Status']}
+        head={['When', 'Contributor', 'Amount', 'Status', 'PayPal ids']}
         rows={payouts.map((payout) => [
           relative(payout.createdAt),
           payout.contributor.user.displayName,
           formatUsd(payout.amountCents),
-          `${payout.status.toLowerCase()}${payout.failureReason ? `: ${payout.failureReason}` : ''}`
+          `${payout.status.toLowerCase()}${payout.failureReason ? `: ${payout.failureReason}` : ''}`,
+          <span key='i' className='font-mono text-xs'>
+            {[payout.paypalBatchId, payout.paypalItemId]
+              .filter(Boolean)
+              .join(' / ')}
+          </span>
         ])}
       />
     </div>

@@ -12,6 +12,7 @@ import {
 import type { StewardEvent, StewardView } from '@/app/lib/types/steward.type'
 import { getSteward, messageSteward } from '@/app/lib/services/steward.service'
 import { formatUsd } from '@/app/lib/utils/format'
+import { RichText } from '@/app/components/RichText'
 import {
   RAIL_STEPS,
   STAGE_LABELS,
@@ -203,7 +204,7 @@ function EventView({
             className='h-7 w-7 shrink-0'
           />
           <div className='rounded-3xl rounded-tl-md bg-card px-4 py-3 text-sm text-ink-900 shadow-card ring-1 ring-ink-100'>
-            {event.summary}
+            <RichText text={event.summary} />
           </div>
         </div>
       )

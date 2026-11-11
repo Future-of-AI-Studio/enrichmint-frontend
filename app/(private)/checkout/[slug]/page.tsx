@@ -69,7 +69,8 @@ export default async function CheckoutPage({
         ) : (
           <>
             <div className='flex items-center gap-2 text-xs text-ink-500'>
-              <SandboxBadge /> Test payment: use a PayPal sandbox buyer account.
+              <SandboxBadge /> Test payment: use a PayPal sandbox buyer account
+              or a sandbox test card.
             </div>
             <ApproveAndPay
               {...paypalConfig()}

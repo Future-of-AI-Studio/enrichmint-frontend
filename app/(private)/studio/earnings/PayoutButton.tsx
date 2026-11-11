@@ -28,7 +28,7 @@ export function PayoutButton({
             )
           } else {
             toast.success(
-              'Payout sent to PayPal. It shows as transferred once PayPal confirms.'
+              `Payout sent to PayPal${result.data.paypalBatchId ? ` (batch ${result.data.paypalBatchId})` : ''}. It shows as transferred once PayPal confirms.`
             )
           }
           router.refresh()

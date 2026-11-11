@@ -1,5 +1,5 @@
 export type UserRole = 'USER' | 'ADMIN'
-export type ContributorStatus = 'PENDING' | 'APPROVED' | 'SUSPENDED'
+export type ContributorStatus = 'PENDING' | 'APPROVED' | 'SUSPENDED' | 'EARNER'
 
 /** Mirrors enrichmint-api `PUBLIC_USER_SELECT`. */
 export type CurrentUser = {

@@ -29,7 +29,12 @@ const PAYOUT_LABEL: Record<
 export default async function EarningsPage(): Promise<React.JSX.Element> {
   const [earnings, profile] = await Promise.all([getEarnings(), getMyProfile()])
   if (earnings.error !== null) return <ErrorNote message={earnings.error} />
-  const { balances, sales, payouts } = earnings.data
+  const { balances, sales, payouts, entries } = earnings.data
+  const noteShares = entries.filter(
+    (entry) =>
+      entry.account === 'CONTRIBUTOR_PAYABLE' &&
+      entry.memo.toLowerCase().includes('field note share')
+  )
 
   return (
     <div className='space-y-8'>
@@ -83,6 +88,45 @@ export default async function EarningsPage(): Promise<React.JSX.Element> {
         )}
       </Card>
 
+      {noteShares.length > 0 && (
+        <section className='space-y-3'>
+          <div>
+            <h2 className='font-display text-xl font-semibold'>
+              Field note shares
+            </h2>
+            <p className='text-xs text-ink-500'>
+              Your share of later sales of guides you wrote a field note on,
+              paid from the platform’s commission. The guide author’s 85% is
+              unchanged.
+            </p>
+          </div>
+          <ul className='space-y-2'>
+            {noteShares.map((entry) => (
+              <li
+                key={entry.id}
+                className='flex items-center justify-between rounded-xl bg-card px-4 py-3 text-sm ring-1 ring-ink-100'
+              >
+                <span>
+                  {entry.memo}{' '}
+                  <span className='text-xs text-ink-400'>
+                    · {relative(entry.createdAt)}
+                  </span>
+                </span>
+                <span
+                  className={
+                    entry.amountCents < 0
+                      ? 'text-danger-700'
+                      : 'font-semibold text-ink-900'
+                  }
+                >
+                  {formatUsd(entry.amountCents)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <section className='space-y-3'>
         <h2 className='font-display text-xl font-semibold'>Sales</h2>
         {sales.length === 0 ? (
@@ -114,6 +158,11 @@ export default async function EarningsPage(): Promise<React.JSX.Element> {
                       <p className='text-xs text-ink-400'>
                         {relative(sale.completedAt)}
                       </p>
+                      {sale.paypalCaptureId && (
+                        <p className='font-mono text-xs text-ink-400'>
+                          PayPal capture {sale.paypalCaptureId}
+                        </p>
+                      )}
                     </td>
                     <td className='px-4 py-3 text-right'>
                       {formatUsd(sale.amountCents)}
@@ -160,6 +209,11 @@ export default async function EarningsPage(): Promise<React.JSX.Element> {
                   <span className='text-sm'>
                     {formatUsd(payout.amountCents)} to {payout.receiverEmail} ·{' '}
                     {relative(payout.createdAt)}
+                    {payout.paypalBatchId && (
+                      <span className='block font-mono text-xs text-ink-400'>
+                        PayPal Payouts batch {payout.paypalBatchId}
+                      </span>
+                    )}
                     {payout.failureReason && (
                       <span className='block text-xs text-ink-400'>
                         Reason: {payout.failureReason.replaceAll('_', ' ')}

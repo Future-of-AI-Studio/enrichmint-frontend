@@ -2,6 +2,7 @@
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { sendFeedback } from '@/app/lib/services/learner.service'
+import { FieldNoteComposer } from './FieldNoteComposer'
 import { Button, Card, fieldStyles } from './ui'
 
 type Choice = boolean | undefined
@@ -31,7 +32,12 @@ export function FeedbackForm({
   const [pending, startTransition] = useTransition()
 
   if (done)
-    return <p className='text-sm text-ink-500'>Thanks, your feedback is in.</p>
+    return (
+      <div className='space-y-3'>
+        <p className='text-sm text-ink-500'>Thanks, your feedback is in.</p>
+        <FieldNoteComposer source={targetType} sourceId={targetId} />
+      </div>
+    )
 
   const submit = (): void =>
     startTransition(async () => {
@@ -109,7 +115,7 @@ export function FeedbackForm({
         placeholder={
           phase === 'IMMEDIATE'
             ? 'Anything missing or misleading? (optional)'
-            : 'What happened? (optional)'
+            : 'What happened? Write a few lines and you can turn it into a field note that earns you a share of later sales.'
         }
         value={text}
         onChange={(event) => setText(event.target.value)}

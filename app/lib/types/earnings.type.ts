@@ -14,6 +14,7 @@ export type Payout = {
   receiverEmail: string
   status: PayoutStatus
   paypalBatchId: string | null
+  paypalItemId: string | null
   failureReason: string | null
   createdAt: string
 }
@@ -36,6 +37,7 @@ export type Earnings = {
     commissionCents: number
     contributorShareCents: number
     processingFeePaidByPlatformCents: number
+    paypalCaptureId: string | null
     completedAt: string | null
     guide: { title: string } | null
     request: { id: string; question: string } | null
@@ -103,6 +105,7 @@ export type AdminPayments = {
   webhookEvents: {
     id: string
     paypalEventId: string
+    resourceId: string | null
     type: string
     verified: boolean
     outcome: string | null

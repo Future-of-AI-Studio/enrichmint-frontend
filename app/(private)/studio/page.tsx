@@ -35,13 +35,23 @@ export default async function StudioPage(): Promise<React.JSX.Element> {
   const { user } = await getSession()
   const profile = user?.contributorProfile
 
-  if (!profile) {
+  // A field note author (EARNER) can be paid but has not applied to sell yet.
+  if (!profile || profile.status === 'EARNER') {
     return (
-      <div className='mx-auto max-w-2xl'>
+      <div className='mx-auto max-w-2xl space-y-6'>
         <PageHeader
           title='Share my experience'
           description='Turn something you have lived through into a guide others can buy, and get paid when they ask you for personal advice. Free to join; EnrichMINT keeps 15% of each sale.'
         />
+        {profile?.status === 'EARNER' && (
+          <Notice tone='mint' title='You already earn from your field notes'>
+            Your field note shares are under{' '}
+            <Link href='/studio/earnings' className='font-medium underline'>
+              Earnings
+            </Link>
+            . Apply below if you also want to write and sell your own guides.
+          </Notice>
+        )}
         <ApplyForm />
       </div>
     )
@@ -79,9 +89,29 @@ export default async function StudioPage(): Promise<React.JSX.Element> {
           tone='warn'
           title='Your contributor profile is waiting for review'
         >
-          You can write guides now. An admin approves new contributors before
-          anything is sold.
+          An admin approves new contributors before anything is sold. You do not
+          need to wait to start writing.
         </Notice>
+      )}
+      {profile.status !== 'SUSPENDED' && !guides.data?.length && (
+        <div className='rounded-3xl bg-mint-50 p-6 ring-1 ring-mint-200'>
+          <p className='text-xs font-semibold tracking-wide text-mint-700 uppercase'>
+            Your next step
+          </p>
+          <h2 className='mt-1 font-display text-xl font-semibold'>
+            Start your first guide interview
+          </h2>
+          <p className='mt-2 text-sm text-ink-700'>
+            Answer nine short questions about something you have lived through,
+            and the AI turns your answers into a draft you edit. When your
+            profile and your guide are both approved, buyers can purchase it.
+            Your 85% share of each sale shows under Earnings straight away, and
+            you withdraw it to your PayPal account from there.
+          </p>
+          <div className='mt-4'>
+            <StartInterviewButton />
+          </div>
+        </div>
       )}
       <div className='grid gap-4 sm:grid-cols-3'>
         <StatTile

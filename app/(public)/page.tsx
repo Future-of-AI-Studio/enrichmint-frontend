@@ -5,7 +5,8 @@ import {
   Avatar,
   Badge,
   ButtonLink,
-  CheckIcon
+  CheckIcon,
+  SandboxBadge
 } from '@/app/components/ui'
 import { listCategories, listGuides } from '@/app/lib/services/guides.service'
 import { formatUsd } from '@/app/lib/utils/format'
@@ -21,8 +22,50 @@ const steps = [
   },
   {
     title: 'Ask the person when the guide runs out',
-    body: 'If you need a more personal answer, it prepares a paid request to that person. You approve every step.'
+    body: 'If you need a more personal answer, it finds the right person and prepares a paid request. You approve every step.'
+  },
+  {
+    title: 'Pass on what happened',
+    body: 'Tried the advice? Publish a short field note on how it went. You earn a share each time the next person buys that guide.'
   }
+]
+
+const notAChatbot = [
+  [
+    'Lived, not averaged',
+    'A chatbot gives you what usually works. Here every answer comes from a named person who went through it, with what they actually said kept apart from AI suggestions.'
+  ],
+  [
+    'A person you can ask',
+    'When the guide does not cover your case, the AI does not guess. It finds someone who has lived it and drafts a paid question to them.'
+  ],
+  [
+    'Outcomes, not opinions',
+    'Field notes from people who tried the advice show what happened next, so you see results, not just recommendations.'
+  ],
+  [
+    'Everyone who helps gets paid',
+    'Authors keep 85% of each sale. Learners who add field notes earn a share of later sales. All of it runs through PayPal.'
+  ]
+]
+
+const moneySteps = [
+  [
+    'PayPal Checkout',
+    'You approve in PayPal (PayPal, Venmo, Pay Later or card). Our server creates the order with the price from our database.'
+  ],
+  [
+    'Server-side capture',
+    'Access is granted only after PayPal reports a completed capture for the exact amount. Webhooks are signature-verified.'
+  ],
+  [
+    'Shared ledger',
+    'Each sale is split: 85% to the author, field note shares to learners who added outcomes, the rest to the platform.'
+  ],
+  [
+    'PayPal Payouts',
+    'People withdraw to their own PayPal account. Refunds go back through PayPal and reverse every share.'
+  ]
 ]
 
 const promises = [
@@ -63,9 +106,10 @@ export default async function HomePage(): Promise<React.JSX.Element> {
               Earn from your experience. Learn from someone else’s.
             </h1>
             <p className='mt-6 text-lg text-ink-500'>
-              Tell the AI what you need help with. It finds guidance from people
-              who have been through it, and connects you with them when you need
-              a personal answer.
+              A network of people helping each other, with AI as the matchmaker.
+              Tell it what you are facing. It finds people who have lived it,
+              connects you when you need a personal answer, and pays everyone
+              whose experience helped.
             </p>
             <div className='mt-9 flex flex-wrap gap-3'>
               <ButtonLink href='/steward' size='lg'>
@@ -80,7 +124,8 @@ export default async function HomePage(): Promise<React.JSX.Element> {
               <span className='grid h-5 w-5 place-items-center rounded-full bg-mint-600 text-white'>
                 <CheckIcon className='h-3 w-3' />
               </span>
-              You approve every payment. Contributors keep 85%.
+              You approve every payment. Contributors keep 85%. Payments,
+              refunds and payouts run on PayPal.
             </p>
           </div>
           <HeroVisual />
@@ -138,7 +183,7 @@ export default async function HomePage(): Promise<React.JSX.Element> {
         <h2 className='text-center font-display text-4xl font-semibold tracking-tight sm:text-5xl'>
           How it works
         </h2>
-        <ol className='mt-14 grid gap-10 md:grid-cols-3'>
+        <ol className='mt-14 grid gap-10 md:grid-cols-2 lg:grid-cols-4'>
           {steps.map((step, index) => (
             <li key={step.title} className='border-t border-ink-200 pt-6'>
               <span className='font-display text-sm font-semibold text-mint-700'>
@@ -154,6 +199,42 @@ export default async function HomePage(): Promise<React.JSX.Element> {
       </section>
 
       <section className='mx-auto max-w-page px-4 sm:px-6 lg:px-8 pt-28'>
+        <h2 className='text-center font-display text-4xl font-semibold tracking-tight sm:text-5xl'>
+          Why not just ask a chatbot?
+        </h2>
+        <dl className='mt-14 grid gap-x-10 gap-y-8 sm:grid-cols-2'>
+          {notAChatbot.map(([title, body]) => (
+            <div key={title}>
+              <dt className='font-display text-xl font-semibold'>{title}</dt>
+              <dd className='mt-2 text-ink-500'>{body}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <section className='mx-auto max-w-page px-4 sm:px-6 lg:px-8 pt-28'>
+        <div className='rounded-[2rem] bg-ink-50 px-6 py-12 ring-1 ring-ink-100 sm:px-12'>
+          <div className='flex flex-wrap items-baseline justify-between gap-3'>
+            <h2 className='font-display text-3xl font-semibold tracking-tight sm:text-4xl'>
+              How the money moves
+            </h2>
+            <SandboxBadge />
+          </div>
+          <ol className='mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-4'>
+            {moneySteps.map(([title, body], index) => (
+              <li key={title}>
+                <span className='font-display text-sm font-semibold text-mint-700'>
+                  0{index + 1}
+                </span>
+                <h3 className='mt-2 font-semibold'>{title}</h3>
+                <p className='mt-1 text-sm text-ink-500'>{body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className='mx-auto max-w-page px-4 sm:px-6 lg:px-8 pt-28'>
         <div className='grid gap-12 lg:grid-cols-[1fr_1.4fr]'>
           <div>
             <h2 className='font-display text-4xl font-semibold tracking-tight sm:text-5xl'>
@@ -161,9 +242,9 @@ export default async function HomePage(): Promise<React.JSX.Element> {
             </h2>
             <p className='mt-5 text-ink-500'>
               Contributors keep 85% of each sale; EnrichMINT keeps a 15%
-              commission and pays the PayPal processing fee from it. EnrichMINT
-              does not promise income or career outcomes. Shared experience is
-              self-reported.
+              commission and pays the PayPal processing fee and field note
+              shares from it. EnrichMINT does not promise income or career
+              outcomes. Shared experience is self-reported.
             </p>
           </div>
           <dl className='grid gap-x-10 gap-y-8 sm:grid-cols-2'>

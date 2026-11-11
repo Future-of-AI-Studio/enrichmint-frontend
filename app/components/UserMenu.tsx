@@ -74,7 +74,13 @@ export function UserMenu({ name }: { name: string }): React.JSX.Element {
           >
             Stewardship log
           </Link>
-          <form action={logout}>
+          <form
+            action={async (): Promise<void> => {
+              await logout()
+              // IMPORTANT: a full load drops the router cache, so the next account never sees this one's pages.
+              window.location.assign('/')
+            }}
+          >
             <button role='menuitem' className={itemStyles}>
               Sign out
             </button>

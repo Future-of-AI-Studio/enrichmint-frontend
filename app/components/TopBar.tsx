@@ -48,7 +48,7 @@ export function TopBar({
 
   return (
     <header className='sticky top-0 z-30 border-b border-ink-100/80 bg-paper/80 backdrop-blur-xl'>
-      <div className='mx-auto flex h-16 max-w-page items-center justify-between gap-6 px-4 sm:px-6 lg:px-8'>
+      <div className='mx-auto flex h-16 max-w-page items-center justify-between gap-3 px-4 sm:gap-6 sm:px-6 lg:px-8'>
         <Logo />
         <nav aria-label='Main' className='hidden min-w-0 flex-1 lg:block'>
           <NavLinks items={items} />
@@ -65,7 +65,8 @@ export function TopBar({
               >
                 Sign in
               </Link>
-              <ButtonLink href='/signup' size='sm'>
+              {/* On phones the header only fits one link; the sign-in page links to sign-up. */}
+              <ButtonLink href='/signup' size='sm' className='max-sm:hidden'>
                 Join
               </ButtonLink>
             </>

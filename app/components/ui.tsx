@@ -149,11 +149,14 @@ export function Avatar({
   name: string
   size?: 'sm' | 'md' | 'lg'
 }): React.JSX.Element {
+  // Drops labels like "(demo)" and stray symbols so they never become initials.
   const initials = name
+    .replace(/\([^)]*\)/g, ' ')
     .split(/\s+/)
+    .map((part) => part.replace(/[^\p{L}]/gu, ''))
     .filter(Boolean)
     .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
+    .map((part) => part[0].toUpperCase())
     .join('')
   // Stable colour per name so the same person always looks the same.
   const tone =

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { FeedbackCounts } from '@/app/components/FeedbackCounts'
+import { FieldNotesList } from '@/app/components/FieldNotesList'
 import {
   ArrowIcon,
   Avatar,
@@ -13,6 +14,7 @@ import {
 } from '@/app/components/ui'
 import { getSession } from '@/app/lib/services/auth.service'
 import { getGuide } from '@/app/lib/services/guides.service'
+import { guideFieldNotes } from '@/app/lib/services/learner.service'
 import { formatUsd, hours } from '@/app/lib/utils/format'
 
 export default async function GuidePage({
@@ -26,6 +28,7 @@ export default async function GuidePage({
   const [result, session] = await Promise.all([getGuide(slug), getSession()])
   if (result.error !== null) notFound()
   const guide = result.data
+  const notes = await guideFieldNotes(guide.id)
   const version = guide.currentVersion!
   const checkoutHref = `/checkout/${guide.slug}${goal ? `?goal=${goal}` : ''}`
   const name = guide.contributor.user.displayName
@@ -113,6 +116,8 @@ export default async function GuidePage({
             </h2>
             <FeedbackCounts stats={guide.feedback} />
           </div>
+
+          <FieldNotesList notes={notes.data ?? []} />
 
           <Card className='flex flex-col gap-4 sm:flex-row'>
             <Avatar name={name} size='lg' />

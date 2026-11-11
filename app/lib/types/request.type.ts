@@ -52,7 +52,14 @@ export type LearnerRequest = {
   response: RequestResponse | null
   guide: { id: string; title: string; slug: string } | null
   contributor: { id: string; headline: string; user: { displayName: string } }
-  orders: { id: string; status: string; amountCents: number }[]
+  orders: {
+    id: string
+    status: string
+    amountCents: number
+    paypalOrderId: string | null
+    paypalCaptureId: string | null
+    completedAt: string | null
+  }[]
   transitions: {
     id: string
     fromState: RequestState

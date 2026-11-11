@@ -2,6 +2,7 @@
 import { AnswerBlocks } from '@/app/components/AnswerBlocks'
 import { LocalTime } from '@/app/components/LocalTime'
 import {
+  Avatar,
   Badge,
   Button,
   ButtonLink,
@@ -195,6 +196,75 @@ export function StewardCardView({
                 ? `Fits your remaining ${formatUsd(data.remainingBudgetCents)}`
                 : `Over your remaining ${formatUsd(data.remainingBudgetCents)}`}
             </Badge>
+          )}
+        </Card>
+      )
+    }
+
+    case 'people_picks': {
+      const { data } = card
+      return (
+        <Card className='space-y-4'>
+          <div>
+            <p className='text-sm font-semibold text-ink-900'>
+              People who have lived this
+            </p>
+            <p className='text-xs text-ink-500'>
+              From the EnrichMINT network. They answer personal questions for a
+              fee, and you only pay if they accept.
+            </p>
+          </div>
+          {data.people.length === 0 ? (
+            <p className='text-sm text-ink-700'>
+              No one in the network has shared this experience yet.
+            </p>
+          ) : (
+            <ul className='space-y-3'>
+              {data.people.map((person) => (
+                <li
+                  key={person.contributorId}
+                  className='rounded-2xl bg-ink-50 p-4'
+                >
+                  <div className='flex flex-wrap items-start justify-between gap-3'>
+                    <div className='flex min-w-0 flex-1 items-center gap-3'>
+                      <Avatar name={person.name} size='sm' />
+                      <div className='min-w-0'>
+                        <p className='font-medium text-ink-900'>
+                          {person.name}
+                        </p>
+                        <p className='text-xs text-ink-500'>
+                          {person.headline}
+                        </p>
+                      </div>
+                    </div>
+                    <Badge tone={person.withinBudget ? 'mint' : 'danger'}>
+                      {formatUsd(person.priceCents)}
+                      {person.withinBudget ? ' fits budget' : ' over budget'}
+                    </Badge>
+                  </div>
+                  <p className='mt-2 text-sm text-ink-700'>
+                    <span className='font-semibold'>Why them: </span>
+                    {person.reason}
+                  </p>
+                  <p className='mt-1 text-xs text-ink-500'>
+                    Delivers within {hours(person.deliveryH)} of your payment.
+                  </p>
+                  {person.withinBudget && (
+                    <Button
+                      size='sm'
+                      variant='secondary'
+                      className='mt-3'
+                      disabled={busy}
+                      onClick={() =>
+                        onSend(`Please draft a question to ${person.name}.`)
+                      }
+                    >
+                      Ask {person.name}
+                    </Button>
+                  )}
+                </li>
+              ))}
+            </ul>
           )}
         </Card>
       )

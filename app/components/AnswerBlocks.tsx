@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import type { AnswerBlock } from '@/app/lib/types/learner.type'
+import { RichText } from './RichText'
 
 const styles = {
   CONTRIBUTOR_SAID: {
@@ -55,7 +56,7 @@ export function AnswerBlocks({
                 </span>
               )}
             </div>
-            <p className='text-ink-900'>{block.text}</p>
+            <RichText text={block.text} className='space-y-2 text-ink-900' />
             {block.quote && (
               <blockquote className='mt-1 border-l-2 border-human-600/40 pl-2 text-xs text-ink-500'>
                 “{block.quote}”

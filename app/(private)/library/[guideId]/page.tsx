@@ -1,11 +1,15 @@
 import { redirect } from 'next/navigation'
+import { PayPalReceipt } from '@/app/components/PayPalReceipt'
+import { RichText } from '@/app/components/RichText'
 import { Badge, ErrorNote, Notice } from '@/app/components/ui'
 import { getGuideContent } from '@/app/lib/services/guides.service'
 import {
   assistantHistory,
+  guideFieldNotes,
   listOrders,
   myFeedback
 } from '@/app/lib/services/learner.service'
+import { FieldNotesList } from '@/app/components/FieldNotesList'
 import { AssistantPanel } from './AssistantPanel'
 import { GuideFeedback } from './GuideFeedback'
 import { RefundLink } from './RefundLink'
@@ -27,10 +31,11 @@ export default async function ReaderPage({
     return <ErrorNote message={content.error} />
   }
   const guide = content.data
-  const [history, orders, feedback] = await Promise.all([
+  const [history, orders, feedback, notes] = await Promise.all([
     guide.ai?.allowed ? assistantHistory(guideId) : null,
     listOrders(),
-    myFeedback('GUIDE', guideId)
+    myFeedback('GUIDE', guideId),
+    guideFieldNotes(guideId)
   ])
   const order = orders.data?.find(
     (row) => row.guideId === guideId && row.status === 'COMPLETED'
@@ -43,6 +48,14 @@ export default async function ReaderPage({
           <Notice tone='mint' title='Payment confirmed by PayPal (sandbox)'>
             The guide is in your library.
           </Notice>
+        )}
+        {order && (
+          <PayPalReceipt
+            amountCents={order.amountCents}
+            paypalOrderId={order.paypalOrderId}
+            paypalCaptureId={order.paypalCaptureId}
+            completedAt={order.completedAt}
+          />
         )}
         <header className='space-y-2'>
           <div className='flex flex-wrap gap-2'>
@@ -71,9 +84,13 @@ export default async function ReaderPage({
                 </span>
                 {section.title}
               </h2>
-              <p className='whitespace-pre-line text-ink-700'>{section.body}</p>
+              <RichText
+                text={section.body}
+                className='space-y-2 text-ink-700'
+              />
             </section>
           ))}
+        <FieldNotesList notes={notes.data ?? []} />
         <GuideFeedback
           guideId={guideId}
           given={feedback.data?.map((row) => row.phase) ?? []}

@@ -111,6 +111,22 @@ export type StewardCard =
       }
     }
   | {
+      type: 'people_picks'
+      data: {
+        aiUsed: boolean
+        remainingBudgetCents: number
+        people: {
+          contributorId: string
+          name: string
+          headline: string
+          reason: string
+          priceCents: number
+          deliveryH: number
+          withinBudget: boolean
+        }[]
+      }
+    }
+  | {
       type: 'request_draft'
       data: {
         requestId: string

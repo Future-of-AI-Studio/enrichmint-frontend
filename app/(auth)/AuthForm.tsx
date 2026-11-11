@@ -2,7 +2,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import classNames from 'classnames'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import type { ComponentProps } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
@@ -48,7 +48,6 @@ export function AuthForm({
 }: {
   mode: 'login' | 'signup'
 }): React.JSX.Element {
-  const router = useRouter()
   const next = sanitizeRedirectPath(useSearchParams().get('next'))
   const [error, setError] = useState<string | null>(null)
   const form = useForm<Values>({
@@ -71,8 +70,8 @@ export function AuthForm({
       setError(result.error)
       return
     }
-    router.push(next)
-    router.refresh()
+    // A full load, so no page cached for a previous account survives the switch.
+    window.location.assign(next)
   })
 
   return (

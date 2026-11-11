@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { AnswerBlocks } from '@/app/components/AnswerBlocks'
 import { FeedbackForm } from '@/app/components/FeedbackForm'
 import { LocalTime } from '@/app/components/LocalTime'
+import { PayPalReceipt } from '@/app/components/PayPalReceipt'
 import {
   Button,
   Card,
@@ -114,7 +115,8 @@ export function RequestView({
             confirms your payment.
           </p>
           <div className='flex items-center gap-2 text-xs text-ink-500'>
-            <SandboxBadge /> Test payment: use a PayPal sandbox buyer account.
+            <SandboxBadge /> Test payment: use a PayPal sandbox buyer account or
+            a sandbox test card.
           </div>
           <ApproveAndPay
             {...paypal}
@@ -191,6 +193,8 @@ export function RequestView({
         </Notice>
       )}
 
+      <MoneyTrail request={request} name={name} />
+
       {request.response && (
         <Delivered
           request={request}
@@ -222,6 +226,53 @@ export function RequestView({
         </ol>
       </details>
     </div>
+  )
+}
+
+/** Shows where the money went, step by step, using only what PayPal and our ledger recorded. */
+function MoneyTrail({
+  request,
+  name
+}: {
+  request: LearnerRequest
+  name: string
+}): React.JSX.Element | null {
+  const order = request.orders.find((row) =>
+    ['COMPLETED', 'REFUNDED', 'REVERSED'].includes(row.status)
+  )
+  if (!order) return null
+  const refunded = order.status !== 'COMPLETED'
+  return (
+    <Card className='space-y-3'>
+      <h2 className='font-semibold'>Where your money went</h2>
+      <PayPalReceipt
+        amountCents={order.amountCents}
+        paypalOrderId={order.paypalOrderId}
+        paypalCaptureId={order.paypalCaptureId}
+        completedAt={order.completedAt}
+      />
+      <ol className='list-decimal space-y-1 pl-5 text-sm text-ink-700'>
+        <li>
+          {name} accepted first, so you were only charged for work they agreed
+          to do.
+        </li>
+        <li>
+          You approved the payment in PayPal, and our server confirmed the
+          capture with PayPal before starting the delivery clock.
+        </li>
+        <li>
+          {refunded
+            ? 'The payment was refunded through PayPal, and the share recorded for the contributor was reversed.'
+            : `${name}’s 85% share is recorded in our ledger as money owed to them.`}
+        </li>
+        {!refunded && (
+          <li>
+            It reaches {name}’s PayPal account through PayPal Payouts when they
+            withdraw. Until then it is owed, not transferred.
+          </li>
+        )}
+      </ol>
+    </Card>
   )
 }
 

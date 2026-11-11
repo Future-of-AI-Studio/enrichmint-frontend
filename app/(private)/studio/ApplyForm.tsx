@@ -40,6 +40,11 @@ export function ApplyForm(): React.JSX.Element {
           onChange={(e) => setBackground(e.target.value)}
         />
       </Field>
+      <p className='rounded-xl bg-ink-50 px-3 py-2 text-sm text-ink-700'>
+        Every new contributor profile is reviewed by an admin before anything
+        you write goes on sale. You can start writing your first guide while you
+        wait, and you will see the review status in your studio.
+      </p>
       <Button
         disabled={pending || !headline.trim() || !background.trim()}
         onClick={() =>

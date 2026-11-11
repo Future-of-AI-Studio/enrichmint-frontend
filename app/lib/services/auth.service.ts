@@ -1,6 +1,5 @@
 'use server'
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 import { http, HttpError } from '@/http'
 import type { ActionResult } from '../types/utils.type'
 import type {
@@ -63,7 +62,7 @@ export const signUp = async (
     password: params.password
   })
 
-/** Form action: the API revokes every session of this user, then the cookie is dropped. */
+/** The API revokes every session of this user, then the cookie is dropped; the caller reloads the page. */
 export const logout = async (): Promise<void> => {
   const token = await getToken()
   try {
@@ -77,7 +76,6 @@ export const logout = async (): Promise<void> => {
   }
   const cookieStore = await cookies()
   cookieStore.delete(process.env.TOKEN_NAME as string)
-  redirect('/')
 }
 
 /** Distinguishes an invalid session (sign in again) from an unreachable API (show a retry). */
